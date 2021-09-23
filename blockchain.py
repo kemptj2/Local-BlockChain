@@ -1,4 +1,6 @@
 from block import Block
+from flask import Flask, request
+import requests
 //Actions that can be taken upon the blockchain
 class Blockchain:
     def __init__(self):
@@ -45,3 +47,15 @@ class Blockchain:
         block.nonce = 0
         return proof
       
+app = Flask(__name__)
+blockchain = Blockchain()
+
+@app.route('/chain', methods=['GET'])
+def get_chain():
+    chain_data = []
+    for block in blockchain.chain:
+        chain_data.append(block.__dict__)
+    return json.dumps({"length": len(chain_data),
+                       "chain": chain_data})
+
+app.run(debug=True, port=5000)
